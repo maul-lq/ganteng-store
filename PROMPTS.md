@@ -337,3 +337,91 @@ Dokumen rencana kerja juga telah diperbarui:
 ---
 
 Silakan beri aba-aba untuk melanjutkan ke **US-08 (Tambah produk yang terkunci login)**.
+
+
+## US-09
+Hasil:
+Viewed page.jsx:1-25
+Viewed FormProduk.jsx:1-45
+Created FormProduk.jsx
+Created actions.js
+Created page.jsx
+Ran command: Run npm.cmd run build (`npm.cmd run build`)
+Viewed rencana_us07_us14.md:1-60
+Created rencana_us07_us14.md
+
+Fitur **US-09: Ubah produk (harus terkunci login)** telah selesai dikerjakan sesuai spesifikasi dan aturan keamanan di [AGENTS.md](file:///c:/Users/T480S/Documents/ganteng-store/AGENTS.md).
+
+### File yang Diubah
+
+1. [app/admin/actions.js](file:///c:/Users/T480S/Documents/ganteng-store/app/admin/actions.js)
+   - Menambahkan Server Action `ubahProduk`.
+   - Melakukan verifikasi login admin di server (`getUser()`).
+   - Memvalidasi ID, nama, dan harga produk.
+   - Memperbarui baris produk di Supabase (`update().eq("id", id)`).
+   - Merevalidasi cache path `/`, `/admin`, dan `/produk/[id]`, lalu kembali ke `/admin`.
+
+2. [components/FormProduk.jsx](file:///c:/Users/T480S/Documents/ganteng-store/components/FormProduk.jsx)
+   - Menyertakan input hidden `id` saat data `produk.id` tersedia.
+
+3. [app/admin/produk/[id]/ubah/page.jsx](file:///c:/Users/T480S/Documents/ganteng-store/app/admin/produk/%5Bid%5D/ubah/page.jsx)
+   - Mengambil produk lama langsung dari Supabase berdasarkan parameter `id`.
+   - Memanggil `notFound()` jika produk tidak ditemukan di database.
+   - Menyambungkan form ke Server Action `ubahProduk`.
+   - Menghapus komponen `CatatanBelumAktif` dan referensi ke `data-contoh.js`.
+
+---
+
+### Cara Mengetes
+
+1. Buka halaman admin di `http://localhost:3000/admin`.
+2. Pada salah satu produk di tabel, klik tombol **"Ubah"** (misal produk ID 1).
+3. Halaman akan menampilkan form yang terisi data lama produk tersebut dari database.
+4. Ubah salah satu data (misal ubah nama atau harga), lalu klik **"Simpan perubahan"**.
+5. Halaman akan kembali ke `/admin` dan perubahan langsung terlihat di tabel admin, halaman utama `/`, dan halaman detail produk.
+
+---
+
+Silakan beri aba-aba jika siap melanjutkan ke **US-10 (Hapus produk yang terkunci login)**.
+
+## US-10
+HASIL:
+Viewed TabelProduk.jsx:1-55
+Created actions.js
+Created TabelProduk.jsx
+Ran command: Run next build (`npm.cmd run build`)
+
+I have launched `npm.cmd run build` to verify the build for US-10 and will wait for it to complete.
+
+Viewed rencana_us07_us14.md:1-60
+Created rencana_us07_us14.md
+
+Fitur **US-10: Hapus produk (harus terkunci login)** telah selesai dikerjakan sesuai spesifikasi dan aturan keamanan di [AGENTS.md](file:///c:/Users/T480S/Documents/ganteng-store/AGENTS.md).
+
+Dengan selesainya US-10, **seluruh fitur Fase 1 (CRUD Produk Admin: US-07, US-08, US-09, US-10)** kini telah tuntas!
+
+### File yang Diubah
+
+1. [app/admin/actions.js](file:///c:/Users/T480S/Documents/ganteng-store/app/admin/actions.js)
+   - Menambahkan Server Action `hapusProduk(formData)`.
+   - Melakukan verifikasi login admin di server (`getUser()`) sebelum menghapus data.
+   - Menghapus baris produk dari database Supabase (`delete().eq("id", id)`).
+   - Merevalidasi cache path `/` dan `/admin`.
+
+2. [components/TabelProduk.jsx](file:///c:/Users/T480S/Documents/ganteng-store/components/TabelProduk.jsx)
+   - Menghubungkan tombol "Hapus" ke form dengan aksi `hapusProduk`.
+   - Menampilkan dialog konfirmasi (`window.confirm`) saat tombol ditekan untuk mencegah penghapusan yang tidak disengaja.
+
+---
+
+### Cara Mengetes
+
+1. Buka tabel produk di `http://localhost:3000/admin`.
+2. Klik tombol merah **"Hapus"** pada salah satu baris produk (misalnya produk yang tadi dibuat saat pengetesan US-08).
+3. Kotak konfirmasi browser akan muncul: *"Yakin ingin menghapus [nama produk]?"*.
+4. Jika klik **Batal/Cancel**, produk tidak akan dihapus.
+5. Jika klik **OK**, produk akan langsung dihapus dari Supabase, dan tabel admin serta katalog `/` otomatis ter-update tanpa memuat ulang manual.
+
+---
+
+Silakan beri aba-aba jika siap melanjutkan ke **Fase 2: US-11 (Filter kategori atau pencarian)**.

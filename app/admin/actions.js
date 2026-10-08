@@ -181,3 +181,30 @@ export async function ubahProduk(prevStateOrFormData, formData) {
   revalidatePath(`/produk/${id}`);
   redirect("/admin");
 }
+
+export async function hapusProduk(formData) {
+  const id = formData instanceof FormData ? formData.get("id") : formData;
+
+  if (!id) {
+    return { error: "ID produk tidak valid." };
+  }
+
+  const supabase = await createSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return { error: "Anda belum masuk atau sesi telah berakhir." };
+  }
+
+  const { error } = await supabase.from("produk").delete().eq("id", id);
+
+  if (error) {
+    return { error: error.message || "Gagal menghapus produk." };
+  }
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
