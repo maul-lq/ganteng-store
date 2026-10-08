@@ -108,9 +108,78 @@ Fitur **US-03: Pesan via WhatsApp** telah selesai dikerjakan sesuai spesifikasi 
 ## US-04 Login admin
 
 **Prompt:**
+Baca AGENTS.md bagian aturan keamanan dan docs/user-stories.md bagian US-04.
 
+Buat login admin memakai Supabase Auth (email dan password) dengan @supabase/ssr dan cookie, memakai SUPABASE_URL dan SUPABASE_PUBLISHABLE_KEY. Login diproses dengan Server Action di app/admin/actions.js dan disambungkan ke form di app/admin/login/page.jsx. Login berhasil diarahkan ke /admin; login gagal menampilkan pesan error yang jelas di halaman login. Buat juga tombol "Keluar" di components/NavAdmin.jsx berfungsi: mengakhiri sesi lalu kembali ke /admin/login. Jangan ubah tampilan. Hapus CatatanBelumAktif dari halaman login.
 **Hasil:**
+Viewed user-stories.md:37-47
+Viewed NavAdmin.jsx:1-19
+Viewed page.jsx:1-29
+Viewed c:\Users\T480S\Documents\ganteng-store\app\admin\actions.js
+Ran command: Check @supabase/ssr import (`node --env-file=.env.local -e "const { createServerClient } = require('@supabase/ssr'); console.log('createServerClient loaded:', typeof createServerClient);"`)
 
+Error: API error (attempt 1): request failed: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse": write tcp 192.168.0.215:50873->172.217.115.4:443: use of closed network connection (Error ID: d1fbb0c4-9250-4b9f-9a0f-5e0e66f562f5-151)
+
+Viewed page.jsx:1-43
+Viewed FormProduk.jsx:1-35
+Viewed Input.jsx:1-16
+Viewed Tombol.jsx:1-26
+Ran command: Search Server Action in docs (`Select-String -Path docs/*.md -Pattern "Server Action|action|login"`)
+
+I have launched a command to search the documentation for details on Server Action patterns and will wait for it to complete.
+
+Ran command: Check cookies from next/headers (`node --env-file=.env.local -e "const { cookies } = require('next/headers'); console.log('cookies is:', typeof cookies);"`)
+Ran command: Check cookies.set in next (`node -e "const fs = require('fs'); const content = fs.readFileSync('node_modules/next/dist/server/web/spec-extension/cookies.js', 'utf8'); console.log(content.includes('set(name, value, options)') || content.includes('set('));"`)
+Ran command: Inspect request-cookies.js (`node -e "const fs = require('fs'); const content = fs.readFileSync('node_modules/next/dist/server/web/spec-extension/adapters/request-cookies.js', 'utf8'); console.log(content.slice(0, 500));"`)
+Ran command: Find set method signature (`node -e "const fs = require('fs'); const content = fs.readFileSync('node_modules/next/dist/server/web/spec-extension/adapters/request-cookies.js', 'utf8'); console.log(content.match(/set\([^)]*\)/g));"`)
+Ran command: Check SUPABASE_PUBLISHABLE_KEY in env (`node --env-file=.env.local -e "console.log('SUPABASE_PUBLISHABLE_KEY set:', !!process.env.SUPABASE_PUBLISHABLE_KEY);"`)
+Ran command: Verify ssr client creation (`node --env-file=.env.local -e "const { createServerClient } = require('@supabase/ssr'); const client = createServerClient(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, { cookies: { getAll: () => [], setAll: () => {} } }); console.log('Client created:', !!client.auth);"`)
+Ran command: Check React.useActionState (`node -e "const React = require('react'); console.log('useActionState exists in react:', typeof React.useActionState);"`)
+Created session.js
+Viewed index.js:1-3
+Created index.js
+Created actions.js
+Created page.jsx
+Created NavAdmin.jsx
+Ran command: Run npm.cmd run build (`npm.cmd run build`)
+Viewed actions.js:1-42
+Viewed page.jsx:1-36
+
+Fitur **US-04: Login admin** telah selesai dikerjakan sesuai spesifikasi dan aturan keamanan di [AGENTS.md](file:///c:/Users/T480S/Documents/ganteng-store/AGENTS.md).
+
+### File yang Dibuat dan Diubah
+
+1. [lib/supabase/session.js](file:///c:/Users/T480S/Documents/ganteng-store/lib/supabase/session.js) & [lib/supabase/index.js](file:///c:/Users/T480S/Documents/ganteng-store/lib/supabase/index.js) (Baru / Diperbarui)
+   - Membuat koneksi sesi admin (`createSessionClient`) menggunakan `@supabase/ssr` dan cookies `next/headers`.
+   - Menggunakan `SUPABASE_URL` dan `SUPABASE_PUBLISHABLE_KEY` dari server environment variable tanpa mengekspos kunci ke client.
+
+2. [app/admin/actions.js](file:///c:/Users/T480S/Documents/ganteng-store/app/admin/actions.js) (Baru)
+   - `loginAdmin` (alias `login`): Server Action yang memproses login dengan `signInWithPassword`. Jika sukses, diarahkan ke `/admin`; jika gagal, mengembalikan pesan error yang jelas.
+   - `logoutAdmin` (alias `logout` / `keluar`): Server Action yang memanggil `signOut()` untuk mengakhiri sesi dan mengarahkan kembali ke `/admin/login`.
+
+3. [app/admin/login/page.jsx](file:///c:/Users/T480S/Documents/ganteng-store/app/admin/login/page.jsx) (Diubah)
+   - Menyambungkan form login ke Server Action `login` menggunakan `useActionState`.
+   - Menampilkan pesan error di dalam kotak peringatan merah jika login gagal.
+   - Menghapus komponen `CatatanBelumAktif` tanpa mengubah elemen dan tata letak tampilan.
+
+4. [components/NavAdmin.jsx](file:///c:/Users/T480S/Documents/ganteng-store/components/NavAdmin.jsx) (Diubah)
+   - Menghubungkan tombol "Keluar" ke Server Action `logout` sehingga mengakhiri sesi dan mengarahkan ke `/admin/login`, dengan mempertahankan tampilan tombol.
+
+---
+
+### Cara Mengetes
+
+1. **Buka halaman login admin**:
+   - Kunjungi `http://localhost:3000/admin/login`.
+2. **Uji login dengan kredensial salah**:
+   - Masukkan email atau password yang salah, lalu klik **Masuk**.
+   - Pastikan muncul pesan error seperti *"Email atau password salah."* di atas kolom form tanpa dialihkan.
+3. **Uji login dengan kredensial benar**:
+   - Masukkan email dan password admin yang terdaftar di Supabase.
+   - Klik **Masuk** dan pastikan halaman dialihkan ke `http://localhost:3000/admin`.
+4. **Uji tombol Keluar**:
+   - Di halaman admin, klik tombol **"Keluar"** pada navigasi atas.
+   - Sesi akan diakhiri dan halaman akan kembali ke `http://localhost:3000/admin/login`.
 **Perbaikan:**
 
 ## US-05 Ganti password
