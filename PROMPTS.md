@@ -235,9 +235,67 @@ Fitur **US-05: Ganti password** telah selesai dikerjakan sesuai spesifikasi dan 
 ## US-06 Proteksi halaman admin
 
 **Prompt:**
+Baca AGENTS.md aturan keamanan nomor 3 dan 4, dan docs/user-stories.md bagian US-06.
 
+Buat file proxy.js di root proyek (Next.js 16). Semua rute /admin kecuali /admin/login wajib login dengan Supabase Auth; kalau belum login, alihkan ke /admin/login. Pastikan juga setiap Server Action yang mengubah data memeriksa login di server. Hapus CatatanBelumAktif dari halaman /admin.
 **Hasil:**
+Viewed user-stories.md:55-75
+Viewed page.jsx:1-28
+Ran command: Check Next.js 16 proxy support (`node -e "const fs = require('fs'); const files = ['node_modules/next/dist/build/entries.js', 'node_modules/next/dist/lib/constants.js', 'node_modules/next/dist/server/web/sandbox/index.js']; files.forEach(f => { if(fs.existsSync(f)) { const content = fs.readFileSync(f, 'utf8'); if(content.includes('proxy')) console.log(f, 'mentions proxy'); } });"`)
+Ran command: Check constants for proxy (`node -e "const fs = require('fs'); const content = fs.readFileSync('node_modules/next/dist/lib/constants.js', 'utf8'); content.split('\n').filter(l => l.toLowerCase().includes('proxy') || l.toLowerCase().includes('middleware')).forEach(l => console.log(l));"`)
+Ran command: Check proxy handling in entries.js (`node -e "const fs = require('fs'); const content = fs.readFileSync('node_modules/next/dist/build/entries.js', 'utf8'); content.split('\n').filter(l => l.includes('PROXY') || l.includes('proxy')).forEach(l => console.log(l));"`)
+Ran command: Find PROXY_FILENAME references (`node -e "const fs = require('fs'); const path = require('path'); function walk(dir) { fs.readdirSync(dir).forEach(f => { const p = path.join(dir, f); if(fs.statSync(p).isDirectory()) walk(p); else if(p.endsWith('.js')) { const c = fs.readFileSync(p, 'utf8'); if(c.includes('PROXY_FILENAME')) console.log(p); } }); } walk('node_modules/next/dist');"`)
+Ran command: Inspect get-page-static-info.js (`node -e "const fs = require('fs'); const content = fs.readFileSync('node_modules/next/dist/build/analysis/get-page-static-info.js', 'utf8'); const idx = content.indexOf('PROXY_FILENAME'); console.log(content.slice(idx - 200, idx + 400));"`)
+Ran command: Inspect export requirements for proxy (`node -e "const fs = require('fs'); const content = fs.readFileSync('node_modules/next/dist/build/analysis/get-page-static-info.js', 'utf8'); const idx = content.indexOf('PROXY_FILENAME'); console.log(content.slice(idx + 250, idx + 1000));"`)
+Ran command: Inspect proxy exports (`node -e "const fs = require('fs'); const content = fs.readFileSync('node_modules/next/dist/build/analysis/get-page-static-info.js', 'utf8'); const idx = content.indexOf('hasProxyExport'); console.log(content.slice(idx, idx + 600));"`)
+Ran command: Inspect proxy/middleware naming rules (`node -e "const fs = require('fs'); const content = fs.readFileSync('node_modules/next/dist/build/analysis/get-page-static-info.js', 'utf8'); const idx = content.indexOf('hasProxyExport'); console.log(content.slice(idx + 500, idx + 1200));"`)
+Ran command: Check proxy export error logic (`node -e "const fs = require('fs'); const content = fs.readFileSync('node_modules/next/dist/build/analysis/get-page-static-info.js', 'utf8'); const idx = content.indexOf('hasProxyExport'); console.log(content.slice(idx + 1200, idx + 2000));"`)
+Ran command: Check proxy export requirements (`node -e "const fs = require('fs'); const content = fs.readFileSync('node_modules/next/dist/build/analysis/get-page-static-info.js', 'utf8'); const idx = content.indexOf('hasProxyExport'); console.log(content.slice(idx + 2000, idx + 2800));"`)
+Created proxy.js
+Created page.jsx
+Ran command: Run npm.cmd run build (`npm.cmd run build`)
 
+I have launched `npm.cmd run build` to verify the build with `proxy.js` and will wait for it to complete.
+
+Viewed session.js:1-39
+Created session.js
+Ran command: Run npm.cmd run build (`npm.cmd run build`)
+
+I have launched `npm.cmd run build` to verify the build and will wait for it to finish.
+
+Fitur **US-06: Proteksi halaman admin** telah selesai dikerjakan sesuai aturan keamanan nomor 3 & 4 di [AGENTS.md](file:///c:/Users/T480S/Documents/ganteng-store/AGENTS.md) dan [docs/user-stories.md](file:///c:/Users/T480S/Documents/ganteng-store/docs/user-stories.md).
+
+### File yang Dibuat dan Diubah
+
+1. [proxy.js](file:///c:/Users/T480S/Documents/ganteng-store/proxy.js) (Baru di root proyek)
+   - Berfungsi sebagai middleware proteksi rute di Next.js 16.
+   - Membaca sesi dan memvalidasi user Supabase Auth menggunakan `@supabase/ssr` dan cookies request.
+   - Mengalihkan setiap pengunjung yang belum login dan mengakses rute `/admin` (termasuk `/admin/password`, `/admin/produk/*`, dll.) langsung ke `/admin/login`.
+   - Rute `/admin/login` dikecualikan sehingga form login tetap dapat diakses publik.
+
+2. [lib/supabase/session.js](file:///c:/Users/T480S/Documents/ganteng-store/lib/supabase/session.js) (Diperbarui)
+   - Menambahkan fungsi helper `requireAuth()` untuk memastikan setiap Server Action yang mengubah data dapat memverifikasi status autentikasi admin di server.
+
+3. [app/admin/actions.js](file:///c:/Users/T480S/Documents/ganteng-store/app/admin/actions.js) (Ditinjau)
+   - Memastikan Server Action yang mengubah data (`gantiPassword`) memeriksa `supabase.auth.getUser()` di server sebelum melakukan perubahan data.
+
+4. [app/admin/page.jsx](file:///c:/Users/T480S/Documents/ganteng-store/app/admin/page.jsx) (Diubah)
+   - Menghapus komponen `CatatanBelumAktif` dari halaman daftar produk admin.
+
+---
+
+### Cara Mengetes
+
+1. **Uji proteksi halaman (tanpa login)**:
+   - Buka jendela penyamaran (*Incognito / Private Window*).
+   - Coba buka alamat `http://localhost:3000/admin`. Pastikan langsung dialihkan (*redirect*) ke `http://localhost:3000/admin/login`.
+   - Coba buka alamat `http://localhost:3000/admin/password`. Pastikan juga langsung dialihkan ke `http://localhost:3000/admin/login`.
+2. **Uji akses setelah login**:
+   - Masuk melalui `http://localhost:3000/admin/login` dengan akun admin yang valid.
+   - Setelah login berhasil, pastikan halaman `/admin` dan `/admin/password` dapat dibuka dengan normal tanpa dialihkan kembali.
+3. **Uji tombol Keluar**:
+   - Klik tombol **"Keluar"** di navigasi admin.
+   - Coba akses kembali `/admin` dan pastikan langsung dialihkan kembali ke `/admin/login`.
 **Perbaikan:**
 
 ## Debugging dan fitur bonus
