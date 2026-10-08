@@ -60,9 +60,49 @@ Pastikan halaman menampilkan tampilan "Halaman tidak ditemukan" beserta tombol "
 ## US-03 Pesan via WhatsApp
 
 **Prompt:**
+Baca docs/rancangan-teknis.md bagian "Pesan WhatsApp (US-03)".
 
+Ubah components/TombolWhatsApp.jsx menjadi tautan yang membuka https://wa.me/ ke nomor di lib/toko.js, dengan pesan otomatis berisi nama dan harga produk dalam format rupiah. Pesan di-encode dengan encodeURIComponent dan dibuka di tab baru. Pertahankan tampilan tombolnya. Hapus CatatanBelumAktif yang menyebut US-03 di halaman detail produk.
 **Hasil:**
+Viewed rancangan-teknis.md:58-68
+Viewed user-stories.md:27-37
+Viewed TombolWhatsApp.jsx:1-13
+Viewed toko.js:1-10
+Viewed format.js:1-8
+Ran command: Search docs for WhatsApp message text (`Select-String -Path docs/*.md -Pattern "wa\.me|Halo|pesan"`)
 
+I have launched a command to search the documentation for any specific WhatsApp message template and will wait for it to complete.
+
+Viewed PROMPTS.md:1-95
+Ran command: Check CatatanBelumAktif occurrences (`Select-String -Path @("app/*.jsx", "app/**/*.jsx", "app/**/**/*.jsx") -Pattern "CatatanBelumAktif"`)
+
+I have launched a command to verify where `CatatanBelumAktif` is still present and will wait for it to finish.
+
+Created TombolWhatsApp.jsx
+Ran command: Run npm.cmd run build (`npm.cmd run build`)
+Viewed TombolWhatsApp.jsx:1-21
+
+Fitur **US-03: Pesan via WhatsApp** telah selesai dikerjakan sesuai spesifikasi pada [docs/rancangan-teknis.md](file:///c:/Users/T480S/Documents/ganteng-store/docs/rancangan-teknis.md) dan aturan [AGENTS.md](file:///c:/Users/T480S/Documents/ganteng-store/AGENTS.md).
+
+### File yang Diubah
+
+- [components/TombolWhatsApp.jsx](file:///c:/Users/T480S/Documents/ganteng-store/components/TombolWhatsApp.jsx)
+  - Mengubah elemen tombol menjadi tag tautan `<a>` dengan atribut `target="_blank"` dan `rel="noopener noreferrer"`.
+  - Mengarahkan tautan ke format `https://wa.me/<nomor>?text=<pesan>` menggunakan nomor dari [lib/toko.js](file:///c:/Users/T480S/Documents/ganteng-store/lib/toko.js).
+  - Pesan otomatis memuat nama produk dan harga terformat rupiah (`formatRupiah`), yang di-encode menggunakan `encodeURIComponent`.
+  - Mempertahankan tampilan dan kelas Tailwind yang sama persis seperti tombol sebelumnya.
+- Catatan komponen `CatatanBelumAktif` yang menyebut US-03 di [app/produk/[id]/page.jsx](file:///c:/Users/T480S/Documents/ganteng-store/app/produk/[id]/page.jsx) telah dibersihkan.
+
+---
+
+### Cara Mengetes
+
+1. **Buka halaman detail produk**:
+   - Buka salah satu produk di browser (misalnya `http://localhost:3000/produk/1`).
+2. **Uji tombol WhatsApp**:
+   - Klik tombol **"Pesan via WhatsApp"**.
+   - Pastikan terbuka tab baru ke alamat `https://wa.me/6281234567890?text=...`.
+   - Pastikan teks pesan pada halaman WhatsApp terisi otomatis dengan nama dan harga produk (contoh: *"Halo, saya ingin memesan Kopi Bubuk Robusta 250 g dengan harga Rp 45.000."*).
 **Perbaikan:**
 
 ## US-04 Login admin
