@@ -80,3 +80,4 @@ Urutan yang disarankan: US-01, US-02, US-03, US-04, US-05, US-06, lalu fitur bon
 - **Pembuat: Maulana Ibrahim**
 - **Link aplikasi: https://ganteng-store.vercel.app/produk/1**
 - **Fitur bonus yang dikerjakan:**
+Tolong review ulang projek
