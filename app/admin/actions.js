@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { createSessionClient } from "@/lib/supabase/session";
 
-export async function login(prevStateOrFormData, formData) {
+export async function loginAdmin(prevStateOrFormData, formData) {
   const data = formData instanceof FormData ? formData : prevStateOrFormData;
   const email = String(data?.get?.("email") || "").trim();
   const password = String(data?.get?.("password") || "");
@@ -30,19 +30,15 @@ export async function login(prevStateOrFormData, formData) {
   redirect("/admin");
 }
 
-export async function loginAdmin(prevStateOrFormData, formData) {
-  return login(prevStateOrFormData, formData);
-}
+export { loginAdmin as login };
 
-export async function logout() {
+export async function logoutAdmin() {
   const supabase = await createSessionClient();
   await supabase.auth.signOut();
   redirect("/admin/login");
 }
 
-export async function logoutAdmin() {
-  return logout();
-}
+export { logoutAdmin as logout, logoutAdmin as keluar };
 
 export async function gantiPassword(prevStateOrFormData, formData) {
   const data = formData instanceof FormData ? formData : prevStateOrFormData;
