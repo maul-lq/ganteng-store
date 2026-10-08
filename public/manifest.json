@@ -1,0 +1,21 @@
+{
+  "name": "Mbok Galak",
+  "short_name": "Mbok Galak",
+  "description": "Rumah makan ala cina serta menyediakan makanan seperti nasi goreng, mie goreng, dan lain-lain",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1f6b4f",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
