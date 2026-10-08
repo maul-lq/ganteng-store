@@ -83,3 +83,5 @@ export async function gantiPassword(prevStateOrFormData, formData) {
 
   return { success: "Password berhasil diganti." };
 }
+
+export { gantiPassword as ubahPassword, gantiPassword as updatePassword };
