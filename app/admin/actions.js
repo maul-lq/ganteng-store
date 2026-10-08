@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { createSessionClient } from "@/lib/supabase/session";
 
-export async function loginAdmin(prevStateOrFormData, formData) {
+export async function login(prevStateOrFormData, formData) {
   const data = formData instanceof FormData ? formData : prevStateOrFormData;
   const email = String(data?.get?.("email") || "").trim();
   const password = String(data?.get?.("password") || "");
@@ -30,13 +30,56 @@ export async function loginAdmin(prevStateOrFormData, formData) {
   redirect("/admin");
 }
 
-export { loginAdmin as login };
+export async function loginAdmin(prevStateOrFormData, formData) {
+  return login(prevStateOrFormData, formData);
+}
 
-export async function logoutAdmin() {
+export async function logout() {
   const supabase = await createSessionClient();
   await supabase.auth.signOut();
   redirect("/admin/login");
 }
 
-export { logoutAdmin as logout, logoutAdmin as keluar };
+export async function logoutAdmin() {
+  return logout();
+}
 
+export async function gantiPassword(prevStateOrFormData, formData) {
+  const data = formData instanceof FormData ? formData : prevStateOrFormData;
+  const passwordBaru = String(data?.get?.("password_baru") || "");
+  const konfirmasiPassword = String(data?.get?.("konfirmasi_password") || "");
+
+  if (!passwordBaru || !konfirmasiPassword) {
+    return { error: "Semua kolom password wajib diisi." };
+  }
+
+  if (passwordBaru.length < 8) {
+    return { error: "Password baru minimal 8 karakter." };
+  }
+
+  if (passwordBaru !== konfirmasiPassword) {
+    return { error: "Konfirmasi password tidak sama dengan password baru." };
+  }
+
+  const supabase = await createSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return { error: "Anda belum masuk atau sesi telah berakhir." };
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password: passwordBaru,
+  });
+
+  if (error) {
+    return {
+      error: error.message || "Gagal mengganti password.",
+    };
+  }
+
+  return { success: "Password berhasil diganti." };
+}

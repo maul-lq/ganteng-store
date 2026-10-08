@@ -185,9 +185,51 @@ Fitur **US-04: Login admin** telah selesai dikerjakan sesuai spesifikasi dan atu
 ## US-05 Ganti password
 
 **Prompt:**
+Baca docs/user-stories.md bagian US-05.
 
+Buat Server Action ganti password di app/admin/actions.js untuk admin yang sedang login, memakai Supabase Auth. Validasi di server: password baru minimal 8 karakter dan harus sama dengan konfirmasi. Tampilkan pesan berhasil atau pesan error yang jelas di halaman. Sambungkan ke form di app/admin/password/page.jsx tanpa mengubah tampilannya. Hapus CatatanBelumAktif dari halaman ini.
 **Hasil:**
+Viewed user-stories.md:46-60
+Viewed page.jsx:1-43
+Viewed actions.js:1-43
+Created actions.js
+Created page.jsx
+Ran command: Run npm.cmd run build (`npm.cmd run build`)
+Created actions.js
+Ran command: Run npm.cmd run build (`npm.cmd run build`)
+Viewed page.jsx:1-55
 
+Fitur **US-05: Ganti password** telah selesai dikerjakan sesuai spesifikasi dan aturan keamanan di [AGENTS.md](file:///c:/Users/T480S/Documents/ganteng-store/AGENTS.md).
+
+### File yang Diubah
+
+1. [app/admin/actions.js](file:///c:/Users/T480S/Documents/ganteng-store/app/admin/actions.js)
+   - Menambahkan Server Action `gantiPassword`.
+   - Melakukan validasi di server: memastikan user sedang login (`getUser()`), password baru minimal 8 karakter, dan konfirmasi password cocok.
+   - Mengganti password akun admin aktif menggunakan `supabase.auth.updateUser({ password: passwordBaru })`.
+   - Mengembalikan `{ success: "Password berhasil diganti." }` jika sukses atau `{ error: ... }` jika gagal.
+
+2. [app/admin/password/page.jsx](file:///c:/Users/T480S/Documents/ganteng-store/app/admin/password/page.jsx)
+   - Menyambungkan form ke Server Action `gantiPassword` menggunakan `useActionState`.
+   - Menampilkan pesan berhasil (*text-utama*) atau pesan error (*text-bahaya*) dengan gaya desain token yang konsisten.
+   - Mempertahankan tata letak dan elemen form tanpa mengubah tampilannya.
+   - Menghapus komponen `CatatanBelumAktif`.
+
+---
+
+### Cara Mengetes
+
+1. **Pastikan sudah login sebagai admin**:
+   - Masuk terlebih dahulu melalui `http://localhost:3000/admin/login`.
+2. **Buka halaman ganti password**:
+   - Klik menu **"Ganti password"** di navigasi admin atau buka `http://localhost:3000/admin/password`.
+3. **Uji validasi error**:
+   - Coba masukkan password kurang dari 8 karakter (misal: `12345`), pastikan muncul pesan error *"Password baru minimal 8 karakter."*.
+   - Coba masukkan password baru dan konfirmasi yang berbeda, pastikan muncul pesan error *"Konfirmasi password tidak sama dengan password baru."*.
+4. **Uji berhasil ganti password**:
+   - Masukkan password baru minimal 8 karakter dan konfirmasi yang sama persis, lalu klik **Simpan password**.
+   - Pastikan muncul pesan sukses: *"Password berhasil diganti."*.
+   - Klik tombol **"Keluar"**, lalu coba masuk kembali di `/admin/login` menggunakan password baru tersebut.
 **Perbaikan:**
 
 ## US-06 Proteksi halaman admin
